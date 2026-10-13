@@ -37,9 +37,15 @@ document.addEventListener("nav", (e) => {
   ul.appendChild(end)
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      ul.classList.toggle("gradient-active", !entry.isIntersecting)
+      const parentUl = entry.target.parentElement
+      if (!parentUl) return
+      if (entry.isIntersecting) {
+        parentUl.classList.remove("gradient-active")
+      } else {
+        parentUl.classList.add("gradient-active")
+      }
     }
-  }, { root: ul, threshold: 0 })
+  }, scrollContainer ? { root: scrollContainer } : undefined)
 
   observer.observe(end)
   window.addCleanup(() => observer.disconnect())
