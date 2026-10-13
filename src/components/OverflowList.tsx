@@ -1,4 +1,4 @@
-import type { VNode, JSX } from "preact";
+import type { JSX, VNode } from "preact";
 
 const OverflowList = ({
   children,
@@ -31,21 +31,15 @@ document.addEventListener("nav", (e) => {
   const ul = document.getElementById("${id}")
   if (!ul) return
 
-  const end = ul.querySelector(".overflow-end")
+  const end = ul.querySelector(":scope > .overflow-end")
   if (!end) return
 
-  const scrollContainer = ul.parentElement
+  ul.appendChild(end)
   const observer = new IntersectionObserver((entries) => {
     for (const entry of entries) {
-      const parentUl = entry.target.parentElement
-      if (!parentUl) return
-      if (entry.isIntersecting) {
-        parentUl.classList.remove("gradient-active")
-      } else {
-        parentUl.classList.add("gradient-active")
-      }
+      ul.classList.toggle("gradient-active", !entry.isIntersecting)
     }
-  }, scrollContainer ? { root: scrollContainer } : undefined)
+  }, { root: ul, threshold: 0 })
 
   observer.observe(end)
   window.addCleanup(() => observer.disconnect())
